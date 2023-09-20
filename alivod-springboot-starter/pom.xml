@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wayakeji</groupId>
+        <artifactId>master-springboot-starter</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>alivod-springboot-starter</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!--common-->
+        <dependency>
+            <groupId>com.wayakeji</groupId>
+            <artifactId>common-springboot-security</artifactId>
+        </dependency>
+        <!-- 阿里云上传视频-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>4.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-vod</artifactId>
+            <version>2.16.12</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- jar包带源码 -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

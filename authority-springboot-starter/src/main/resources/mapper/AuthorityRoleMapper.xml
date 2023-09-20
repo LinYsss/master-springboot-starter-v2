@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.authority.mapper.AuthorityRoleMapper">
+
+  <resultMap id="authorityRoleMap" type="com.wayakeji.common.api.entity.AuthorityRole">
+    <id property="id" column="id"/>
+    <result property="pid" column="pid"/>
+    <result property="name" column="name"/>
+    <result property="explain" column="explain"/>
+    <result property="clientid" column="clientId"/>
+    <result property="addtime" column="addTime"/>
+  </resultMap>
+
+  <select id="queryPage" parameterType="com.wayakeji.common.api.dto.AuthorityRoleQuery"
+          resultType="java.util.Map">
+    SELECT
+    a.*,
+    b.`username`,
+    b.`nickname`
+    FROM `authority_role` a
+    LEFT JOIN `authority_user` b ON b.`id` = a.`clientId`
+    <where>
+      <if test="query.name != null and query.name != ''">
+        AND a.`name` LIKE CONCAT('%', #{query.name}, '%')
+      </if>
+      <if test="query.pid != null and query.pid != 0">
+        AND a.`pid` = #{query.pid}
+      </if>
+      <if test="query.clientId != null and query.clientId != 0">
+        AND a.`clientId` = #{query.clientId}
+      </if>
+      <if test="query.id != null and query.id != 0">
+        AND a.`id` = #{query.id}
+      </if>
+    </where>
+  </select>
+
+
+  <delete id="delModuleByMid" parameterType="int">
+    DELETE FROM `authority_role_module`
+    WHERE `mid` = #{mid}
+  </delete>
+
+  <delete id="delModuleByMids" parameterType="java.util.List">
+    DELETE FROM `authority_role_module`
+    WHERE `mid` IN
+    <foreach collection="list" item="mid" open="(" separator="," close=")">
+      #{mid}
+    </foreach>
+  </delete>
+
+
+  <insert id="insertRole" parameterType="com.wayakeji.common.api.dto.AuthorityRoleAdd"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO `authority_role` (
+      `pid`, `name`, `explain`,
+      `clientId`, `addTime`
+    )VALUES (
+              #{pid}, #{name}, #{explain},
+              #{clientId}, #{addTime}
+            )
+  </insert>
+
+
+  <delete id="deletes" parameterType="com.wayakeji.common.api.dto.AuthorityRoleDel">
+    DELETE FROM `authority_role`
+    WHERE `id` IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+
+
+  <delete id="delUsersByRid" parameterType="com.wayakeji.common.api.dto.AuthorityRoleDel">
+    DELETE FROM `authority_role_user`
+    WHERE `rid` IN
+    <foreach collection="ids" item="rid" open="(" separator="," close=")">
+      #{rid}
+    </foreach>
+  </delete>
+
+  <delete id="delModulesByRid" parameterType="com.wayakeji.common.api.dto.AuthorityRoleDel">
+    DELETE FROM `authority_role_module`
+    WHERE `rid` IN
+    <foreach collection="ids" item="rid" open="(" separator="," close=")">
+      #{rid}
+    </foreach>
+  </delete>
+
+  <delete id="delUsersByRidAndUids" parameterType="com.wayakeji.common.api.dto.AuthorityRoleUserAdd">
+    DELETE FROM `authority_role_user`
+    WHERE
+    `uid` IN
+    <foreach collection="dels" item="uid" open="(" separator="," close=")">
+      #{uid}
+    </foreach>
+    AND `rid` = #{rid}
+  </delete>
+
+  <insert id="addUsersByRidAndUids" parameterType="com.wayakeji.common.api.dto.AuthorityRoleUserAdd">
+    INSERT INTO `authority_role_user`(
+    `rid`, `uid`
+    )VALUES
+    <foreach collection="adds" item="uid" separator=",">
+      (#{rid}, #{uid})
+    </foreach>
+  </insert>
+
+  <delete id="delModulesByRidAndUids" parameterType="com.wayakeji.common.api.dto.AuthorityRoleModuleAdd">
+    DELETE FROM `authority_role_module`
+    WHERE
+    `mid` IN
+    <foreach collection="dels" item="mid" open="(" separator="," close=")">
+      #{mid}
+    </foreach>
+    AND `rid` = #{rid}
+  </delete>
+
+  <delete id="delModulesByRidAndUidsV2" parameterType="com.wayakeji.common.api.dto.AuthorityRoleModuleAdd">
+    DELETE FROM `authority_role_module`
+    WHERE `rid` = #{rid}
+  </delete>
+
+  <insert id="addModulesByRidAndUids" parameterType="com.wayakeji.common.api.dto.AuthorityRoleModuleAdd">
+    INSERT INTO `authority_role_module`(
+    `rid`, `mid`
+    )VALUES
+    <foreach collection="adds" item="mid" separator=",">
+      (#{rid}, #{mid})
+    </foreach>
+  </insert>
+
+  <select id="selectByPid" parameterType="int"
+          resultType="int">
+    SELECT
+      `id`
+    FROM `authority_role`
+    WHERE `pid` = #{pid}
+  </select>
+
+  <select id="selectCheckRid" parameterType="com.wayakeji.common.api.dto.AuthorityRoleQuery"
+          resultType="int">
+    SELECT
+    COUNT(`id`)
+    FROM `authority_role`
+    <where>
+      <if test="name != null and name != ''">
+        AND `name` LIKE CONCAT('%', #{name}, '%')
+      </if>
+      <if test="pid != null and pid != 0">
+        AND `pid` = #{pid}
+      </if>
+      <if test="clientId != null and clientId != 0">
+        AND `clientId` = #{clientId}
+      </if>
+      <if test="id != null and id != 0">
+        AND `id` = #{id}
+      </if>
+    </where>
+  </select>
+
+
+</mapper>

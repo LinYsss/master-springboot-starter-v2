@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wayakeji</groupId>
+        <artifactId>master-springboot-starter</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <groupId>com.wayakeji</groupId>
+    <artifactId>generator-springboot-starter</artifactId>
+    <version>2.0.0</version>
+    <description>代码生成模块</description>
+
+    <dependencies>
+        <!--common-->
+        <dependency>
+            <groupId>com.wayakeji</groupId>
+            <artifactId>common-springboot-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wayakeji</groupId>
+            <artifactId>common-springboot-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wayakeji</groupId>
+            <artifactId>common-springboot-mybatis</artifactId>
+        </dependency>
+        <!--数据源-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <!-- 操作配置文件的工具包Properties files、XML documents、Windows INI files、Property list files
+        (plist)、JNDI、JDBC Datasource、System properties、Applet parameters和Servlet parameters。-->
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>${configuration.version}</version>
+        </dependency>
+        <!-- 代码生成模板引擎-->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity.tools</groupId>
+            <artifactId>velocity-tools-generic</artifactId>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus-generator</artifactId>-->
+        <!--        </dependency>-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- jar包带源码 -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

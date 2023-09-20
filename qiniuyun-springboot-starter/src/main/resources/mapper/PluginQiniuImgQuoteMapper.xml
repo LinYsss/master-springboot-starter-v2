@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.demo.mapper.PluginQiniuImgQuoteMapper">
+
+    <resultMap id="pluginQiniuImgQuoteMap" type="com.wayakeji.qiniuyun.entity.PluginQiniuImgQuote">
+        <id property="id" column="id"/>
+        <result property="pid" column="pid"/>
+        <result property="alias" column="alias"/>
+        <result property="name" column="name"/>
+        <result property="table" column="table"/>
+        <result property="tid" column="tid"/>
+        <result property="time" column="time"/>
+    </resultMap>
+
+    <insert id="inserts" parameterType="java.util.List">
+        INSERT INTO `plugin_qiniu_img_quote` (
+        `pid`, `alias`, `name`,
+        `table`, `tid`
+        )VALUES
+        <foreach collection="list" item="bean" separator=",">
+            (
+            #{bean.pid}, #{bean.alias}, #{bean.name},
+            #{bean.table}, #{bean.tid}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insert" parameterType="com.wayakeji.qiniuyun.bean.ImageQuoteBean">
+        INSERT INTO `plugin_qiniu_img_quote` (`pid`, `alias`, `name`,
+                                              `table`, `tid`)
+        VALUES (#{pid}, #{alias}, #{name},
+                #{table}, #{tid})
+    </insert>
+
+    <select id="selectPidByTable" parameterType="com.wayakeji.qiniuyun.bean.ImageQuoteBean"
+            resultType="int">
+        SELECT
+        `pid`
+        FROM `plugin_qiniu_img_quote`
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` = #{name}
+            </if>
+            AND `table` = #{table}
+            AND `tid` = #{tid}
+        </where>
+    </select>
+
+    <select id="selectPidsByTable" parameterType="com.wayakeji.qiniuyun.bean.ImageQuoteBean"
+            resultType="int">
+        SELECT
+        `pid`
+        FROM `plugin_qiniu_img_quote`
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` = #{name}
+            </if>
+            AND `table` = #{table}
+            AND `tid` = #{tid}
+        </where>
+    </select>
+
+
+    <delete id="delete" parameterType="com.wayakeji.qiniuyun.bean.ImageQuoteBean">
+        DELETE FROM `plugin_qiniu_img_quote`
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` = #{name}
+            </if>
+            AND `table` = #{table}
+            AND `tid` = #{tid}
+        </where>
+    </delete>
+</mapper>

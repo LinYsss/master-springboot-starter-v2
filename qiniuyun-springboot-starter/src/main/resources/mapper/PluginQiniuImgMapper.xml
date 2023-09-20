@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.qiniuyun.mapper.PluginQiniuImgMapper">
+
+    <resultMap id="pluginQiniuImgMap" type="com.wayakeji.qiniuyun.entity.PluginQiniuImg">
+        <id property="id" column="id"/>
+        <result property="key" column="key"/>
+        <result property="addr" column="addr"/>
+        <result property="size" column="size"/>
+        <result property="name" column="name"/>
+        <result property="time" column="time"/>
+        <result property="quote" column="quote"/>
+        <result property="adduid" column="addUid"/>
+        <result property="addrid" column="addRid"/>
+        <result property="modifytime" column="modifyTime"/>
+        <result property="pid" column="pid"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <insert id="insertOne" parameterType="com.wayakeji.qiniuyun.entity.PluginQiniuImg"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `plugin_qiniu_img` (`key`, `addr`, `size`,
+                                        `name`, `addUid`, `addRid`)
+        VALUES (#{key}, #{addr}, #{size},
+                #{name}, #{adduid}, #{addrid})
+    </insert>
+
+    <insert id="inserts" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `plugin_qiniu_img` (
+        `key`, `addr`, `size`,
+        `name`, `addUid`, `addRid`
+        )VALUES
+        <foreach collection="list" item="img" separator=",">
+            (
+            #{img.key}, #{img.addr}, #{img.size},
+            #{img.name}, #{img.adduid}, #{img.addrid}
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="queryPage" resultMap="pluginQiniuImgMap">
+        SELECT
+        a.`id`,
+        a.`key`,
+        a.`addr`,
+        a.`size`,
+        a.`name`,
+        a.`time`,
+        a.`quote`
+        FROM `plugin_qiniu_img` a
+        <where>
+            `type` = 0
+            <if test="query.name != null and query.name != ''">
+                AND a.`name` LIKE CONCAT('%', #{query.name}, '%')
+            </if>
+            <if test="query.adduid != null and query.adduid != 1">
+                AND a.`addUid` = #{query.adduid}
+            </if>
+<!--            <if test="query.adduid == null or query.adduid == 1">-->
+<!--                AND a.`addUid` IS NULL-->
+<!--            </if>-->
+            <if test="query.addrid != null and query.addrid != 1">
+                AND a.`addRid` = #{query.addrid}
+            </if>
+<!--            <if test="query.addrid == null or query.addrid == 1">-->
+<!--                AND a.`addRid` IS NULL-->
+<!--            </if>-->
+        </where>
+        ORDER BY a.`time` DESC
+    </select>
+
+    <select id="queryV2" resultMap="pluginQiniuImgMap">
+        SELECT
+        a.`id`,
+        a.`key`,
+        a.`addr`,
+        a.`size`,
+        a.`name`,
+        a.`time`,
+        a.`quote`,
+        a.`pid`,
+        a.`type`
+        FROM `plugin_qiniu_img` a
+        <where>
+            <if test="query.name != null and query.name != ''">
+                AND a.`name` LIKE CONCAT('%', #{query.name}, '%')
+            </if>
+            <if test="query.adduid != null and query.adduid != 1">
+                AND a.`addUid` = #{query.adduid}
+            </if>
+<!--            <if test="query.adduid == null or query.adduid == 1">-->
+<!--                AND a.`addUid` IS NULL-->
+<!--            </if>-->
+            <if test="query.addrid != null and query.addrid != 1">
+                AND a.`addRid` = #{query.addrid}
+            </if>
+<!--            <if test="query.addrid == null or query.addrid == 1">-->
+<!--                AND a.`addRid` IS NULL-->
+<!--            </if>-->
+            <if test="query.pid == null or query.pid == 0">
+                AND a.`pid` IS NULL
+            </if>
+            <if test="query.pid != null">
+                AND a.`pid` = #{query.pid}
+            </if>
+            <if test="query.type != null">
+                AND a.`type` = #{query.type}
+            </if>
+        </where>
+        GROUP BY a.`id`
+        ORDER BY a.`type` DESC,a.`time` DESC
+    </select>
+
+
+    <select id="selectKeyByIds" parameterType="com.wayakeji.qiniuyun.params.QiniuImgDel"
+            resultType="com.wayakeji.qiniuyun.bean.ImageKeyBean">
+        SELECT
+        `key`,
+        COUNT(1) AS `num`
+        FROM `plugin_qiniu_img`
+        WHERE `key` IN(
+        SELECT
+        `key`
+        FROM `plugin_qiniu_img`
+        WHERE `id` IN
+        <foreach collection="ids"  item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        GROUP BY `key`
+    </select>
+
+    <select id="selectSumQuoteByIds" parameterType="com.wayakeji.qiniuyun.params.QiniuImgDel"
+            resultType="int">
+        SELECT
+        SUM(`quote`)
+        FROM `plugin_qiniu_img`
+        WHERE `id` IN
+        <foreach collection="ids"  item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="removeQiniu" parameterType="com.wayakeji.qiniuyun.params.QiniuImgDel">
+        DELETE FROM `plugin_qiniu_img`
+        WHERE `id` IN
+        <foreach collection="ids"  item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectQuoteByPid" parameterType="int"
+            resultType="com.wayakeji.qiniuyun.bean.ImageQuoteBean">
+        SELECT
+            `alias`,
+            `name`,
+            `table`,
+            `tid` as `id`
+        FROM `plugin_qiniu_img_quote`
+        WHERE `pid` = #{pid}
+    </select>
+
+    <select id="selectQuoteTableFieldOfName" parameterType="com.wayakeji.qiniuyun.bean.ImageQuoteBean"
+            resultType="string">
+        SELECT
+            `name`
+        FROM ${table}
+        WHERE `id` = #{id}
+    </select>
+
+
+    <insert id="insertV2" parameterType="com.wayakeji.qiniuyun.entity.PluginQiniuImg"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `plugin_qiniu_img` (
+            `key`, `addr`, `size`,`name`, `addUid`, `addRid`,`pid`,`type`
+        )VALUES (
+                    #{key}, #{addr}, #{size},#{name}, #{adduid}, #{addrid}, #{pid}, #{type}
+                )
+    </insert>
+
+    <update id="updateNameV2" parameterType="com.wayakeji.qiniuyun.entity.PluginQiniuImg">
+        UPDATE
+        `plugin_qiniu_img`
+        <set>
+            <if test="name != null and name != ''">
+                `name` = #{name},
+            </if>
+            `pid` = #{pid}
+        </set>
+        WHERE `id` = #{id}
+    </update>
+
+    <delete id="deleteV2" parameterType="com.wayakeji.qiniuyun.params.QiniuImgDel">
+        DELETE FROM `plugin_qiniu_img`
+        WHERE `pid` IN
+        <foreach collection="ids"  item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getFolderV2" parameterType="com.wayakeji.qiniuyun.params.QiniuImgGet"
+            resultType="java.util.Map">
+        SELECT
+            a.`id`,
+            a.`name`
+        FROM `plugin_qiniu_img` a
+        WHERE a.type = 1
+    </select>
+
+
+    <update id="updateQuote" parameterType="com.wayakeji.qiniuyun.params.QiniuImgQuote">
+        UPDATE
+            `plugin_qiniu_img`
+        SET
+            `quote` = `quote` + #{quote},
+            `modifyTime` = NOW()
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="updateQuotes" parameterType="java.util.List">
+        <foreach collection="list" item="bean" separator=";">
+            UPDATE
+            `plugin_qiniu_img`
+            SET
+            `quote` = `quote` + #{bean.quote},
+            `modifyTime` = NOW()
+            WHERE `id` = #{bean.id}
+        </foreach>
+    </update>
+</mapper>

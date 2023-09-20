@@ -1,0 +1,21 @@
+package com.wayakeji.common.core.encryption;
+
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.crypto.Mode;
+import cn.hutool.crypto.Padding;
+import cn.hutool.crypto.symmetric.AES;
+
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+/**
+ * RSA加密
+ */
+public class CryptoRSA {
+
+    // 定义私钥和公钥
+    public static final String PRIVATE_KEY="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALbAU3GxOIu57t/LG2BmB/JmnACd91zACuVLBi7jqUfGOnwb6TduejGSJSKrv5uy6Q/jd1pUjxtBUbs+u3GRmYqzp8et076qdKme4BW0/Ex87H3D3ry0HImyY6qgj5rOOpzHhxq7e0nx3C4PrBvG7CG8aA+wytix/ocUAC6DqGVJAgMBAAECgYBhEBVBtVbLH533zvBjas2duVHyIfRXlsgysH5AOTqXnHlDoa9keZD88xo2J/JEx+lxPucNWwwG9dJrGQ6Fa0eYtb8QaeaN7zyAA+XY4UNZMX2ZGjJ3OKbtoRIT0czhszvWFsq5Rb3znyglEtgnEv6hjZDbW6OYkYCpk3TdQYVPgQJBANk1jSCKeWD0c0zWMjEyY+lTuns7O8V4cVZ1gpqIHoImPedA+sq4a2HSlU8kB8159SZ4oUXaSHn+iQq2ROYf8q0CQQDXY2pSC34y47YNgloT95tYxMD9mF99ZK5z0f8LYNVRGU2eE4ZBMnkmGmSZuDFPma3g706Nx2fCnGrawpUFAiyNAkBlP54iXgoIVMpuNaY94oRKHhpeGRVajjMenzYa/HpkJplSc6qz1lVPyw6ITn5InKHWpgJfAkooe6q70Iy7TIcdAkEA0nEv0Dmqc85IcaqKmDe0cGbMqPnXUoysZj0nE9bolPREAc7RvaGy/KeM4yQ0CbH9UWh/N8c8eciaHmM/dkVJgQJAYbM+tfBfv4pkdkQbIKNcLu0Md6uKXpXtaJmC5Q9mICMGBJK7+HLVftlJOz6CcDe2Hn/SnHY248dO3hbtkzRU0g==";
+
+    public static final String PUBLIC_KEY="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2wFNxsTiLue7fyxtgZgfyZpwAnfdcwArlSwYu46lHxjp8G+k3bnoxkiUiq7+bsukP43daVI8bQVG7PrtxkZmKs6fHrdO+qnSpnuAVtPxMfOx9w968tByJsmOqoI+azjqcx4cau3tJ8dwuD6wbxuwhvGgPsMrYsf6HFAAug6hlSQIDAQAB";
+
+}

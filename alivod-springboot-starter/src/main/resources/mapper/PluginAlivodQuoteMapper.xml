@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.alivod.mapper.PluginAlivodQuoteMapper">
+
+    <resultMap id="pluginAlivodQuoteMap" type="com.wayakeji.alivod.entity.PluginAlivodQuote">
+        <id property="id" column="id"/>
+        <result property="pid" column="pid"/>
+        <result property="alias" column="alias"/>
+        <result property="name" column="name"/>
+        <result property="table" column="table"/>
+        <result property="tid" column="tid"/>
+        <result property="time" column="time"/>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="com.wayakeji.alivod.dto.AlivodQuoteBean">
+        INSERT INTO `plugin_alivod_quote` (`pid`, `alias`, `name`,
+                                           `table`, `tid`)
+        VALUES (#{pid}, #{alias}, #{name},
+                #{table}, #{tid})
+    </insert>
+
+    <select id="selectPidByTable" parameterType="com.wayakeji.alivod.dto.AlivodQuoteBean"
+            resultType="int">
+        SELECT
+        `pid`
+        FROM `plugin_alivod_quote`
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` = #{name}
+            </if>
+            AND `table` = #{table}
+            AND `tid` = #{tid}
+        </where>
+    </select>
+
+    <delete id="deleteQuote" parameterType="com.wayakeji.alivod.dto.AlivodQuoteBean">
+        DELETE FROM `plugin_alivod_quote`
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` = #{name}
+            </if>
+            AND `table` = #{table}
+            AND `tid` = #{tid}
+        </where>
+    </delete>
+
+</mapper>

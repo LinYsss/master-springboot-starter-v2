@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.alivod.mapper.PluginAlivodMapper">
+
+    <resultMap id="pluginAlivodMap" type="com.wayakeji.alivod.entity.PluginAlivod">
+        <id property="id" column="id"/>
+        <result property="videoid" column="videoId"/>
+        <result property="cover" column="cover"/>
+        <result property="videooriginaladdr" column="videoOriginalAddr"/>
+        <result property="videotranscodeaddr" column="videoTranscodeAddr"/>
+        <result property="size" column="size"/>
+        <result property="videotime" column="videoTime"/>
+        <result property="name" column="name"/>
+        <result property="starttime" column="startTime"/>
+        <result property="endtime" column="endTime"/>
+        <result property="state" column="state"/>
+        <result property="quote" column="quote"/>
+        <result property="adduid" column="addUid"/>
+        <result property="addrid" column="addRid"/>
+        <result property="modifytime" column="modifyTime"/>
+    </resultMap>
+
+    <select id="selectUpdateVideo" resultType="string">
+        SELECT
+            `videoId`
+        FROM `plugin_alivod`
+        WHERE `cover` IS NULL
+    </select>
+    <update id="updateVideoTranscodeAddr" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE
+            `plugin_alivod`
+            SET
+            `cover` = #{item.cover},
+            `videoTranscodeAddr` = #{item.address},
+            `size` = #{item.size},
+            `videoTime` = #{item.videoTime},
+            `state` = 5
+            WHERE `videoId` = #{item.videoId}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="com.wayakeji.alivod.entity.PluginAlivod"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `plugin_alivod` (`videoId`, `cover`, `size`, `videoTime`,
+                                     `name`, `addUid`, `addRid`)
+        VALUES (#{videoid}, #{cover}, #{size}, #{videotime},
+                #{name}, #{adduid}, #{addrid})
+    </insert>
+
+    <update id="updateOriginalAddr" parameterType="com.wayakeji.alivod.dto.AlivodUrl">
+        UPDATE
+            `plugin_alivod`
+        SET `videoOriginalAddr` = #{url},
+            `endTime`           = NOW(),
+            `state`             = #{state}
+        WHERE `videoId` = #{videoId}
+    </update>
+
+    <select id="queryPage"  resultMap="pluginAlivodMap">
+        SELECT
+        a.`id`,
+        a.`videoId`,
+        a.`cover`,
+        a.`videoOriginalAddr`,
+        a.`videoTranscodeAddr`,
+        a.`size`,
+        a.`videoTime`,
+        a.`name`,
+        a.`startTime`,
+        a.`endTime`,
+        a.`state`,
+        a.`quote`
+        FROM `plugin_alivod` a
+        <where>
+            <if test="query.name != null and query.name != ''">
+                AND a.`name` LIKE CONCAT('%', #{query.name}, '%')
+            </if>
+            <if test="query.state != null and query.state != 0">
+                AND a.`state` = #{query.state}
+            </if>
+            <if test="query.adduid != null and query.adduid != 1">
+                AND a.`addUid` = #{query.adduid}
+            </if>
+<!--            <if test="query.adduid == null and query.adduid == 1">-->
+<!--                AND a.`addUid` IS NULL-->
+<!--            </if>-->
+            <if test="query.addrid != null and query.addrid != 1">
+                AND a.`addRid` = #{query.addrid}
+            </if>
+<!--            <if test="query.addrid == null or query.addrid == 1">-->
+<!--                AND a.`addRid` IS NULL-->
+<!--            </if>-->
+        </where>
+        ORDER BY a.`startTime` DESC
+    </select>
+
+
+    <select id="selectVidByIds" parameterType="com.wayakeji.alivod.dto.AlivodDel"
+            resultType="com.wayakeji.alivod.dto.AlivodVidBean">
+        SELECT
+        `videoId` AS `vid`,
+        COUNT(1) AS `num`
+        FROM `plugin_alivod`
+        WHERE `videoId` IN (
+        SELECT
+        a.`videoId`
+        FROM `plugin_alivod` a
+        WHERE a.`id` IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        GROUP BY `videoId`
+    </select>
+
+
+    <delete id="alivodDelete" parameterType="com.wayakeji.alivod.dto.AlivodDel">
+        DELETE FROM `plugin_alivod`
+        WHERE `id` IN
+        <foreach collection="ids"  item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <update id="updateQuote" parameterType="com.wayakeji.alivod.dto.AlivodQuote">
+        UPDATE
+            `plugin_alivod`
+        SET
+            `quote` = `quote` + #{quote},
+            `modifyTime` = NOW()
+        WHERE `id` = #{id}
+    </update>
+
+    <select id="selectQuoteByPid" parameterType="int"
+            resultType="com.wayakeji.alivod.dto.AlivodQuoteBean">
+        SELECT
+            `alias`,
+            `name`,
+            `table`,
+            `tid` as `id`
+        FROM `plugin_alivod_quote`
+        WHERE `pid` = #{pid}
+    </select>
+
+    <select id="selectQuoteCountByPids" parameterType="com.wayakeji.alivod.dto.AlivodDel"
+            resultType="int">
+        SELECT
+        COUNT(`id`)
+        FROM `plugin_alivod_quote`
+        WHERE `pid` IN
+        <foreach collection="ids"  item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectQuoteTableFieldOfName" parameterType="com.wayakeji.alivod.dto.AlivodQuoteBean"
+            resultType="string">
+        SELECT
+            `name`
+        FROM ${table}
+        WHERE `id` = #{id}
+    </select>
+
+</mapper>

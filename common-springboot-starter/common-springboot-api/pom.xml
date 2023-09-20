@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wayakeji</groupId>
+        <artifactId>common-springboot-starter</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>common-springboot-api</artifactId>
+    <packaging>jar</packaging>
+    <description>通用用户权限管理系统公共api模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.wayakeji</groupId>
+            <artifactId>common-springboot-mybatis</artifactId>
+        </dependency>
+        <!--swagger-->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+        <!-- excel 导入导出 https://github.com/pig-mesh/excel-spring-boot-starter -->
+        <dependency>
+            <groupId>com.pig4cloud.excel</groupId>
+            <artifactId>excel-spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- jar包带源码 -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

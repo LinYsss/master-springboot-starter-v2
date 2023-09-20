@@ -1,0 +1,6 @@
+com.wayakeji.common.core.config.TaskExecutorConfiguration
+com.wayakeji.common.core.config.JacksonConfiguration
+com.wayakeji.common.core.config.RedisTemplateConfiguration
+com.wayakeji.common.core.config.RestTemplateConfiguration
+com.wayakeji.common.core.util.SpringContextHolder
+com.wayakeji.common.core.config.WebMvcConfiguration

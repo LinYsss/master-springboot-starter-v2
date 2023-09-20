@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.authority.mapper.AuthorityUserMapper">
+
+  <resultMap id="authorityUserMap" type="com.wayakeji.common.api.entity.AuthorityUser">
+    <id property="id" column="id"/>
+    <result property="username" column="username"/>
+    <result property="phone" column="phone"/>
+    <result property="email" column="email"/>
+    <result property="password" column="password"/>
+    <result property="salt" column="salt"/>
+    <result property="mix" column="mix"/>
+    <result property="nickname" column="nickname"/>
+    <result property="secret" column="secret"/>
+    <result property="invitecode" column="inviteCode"/>
+    <result property="invitecodefrom" column="inviteCodeFrom"/>
+    <result property="organization" column="organization"/>
+    <result property="enabled" column="enabled"/>
+    <result property="belong" column="belong"/>
+    <result property="createtime" column="createTime"/>
+    <result property="createip" column="createIp"/>
+    <result property="logintime" column="loginTime"/>
+    <result property="loginip" column="loginIp"/>
+    <result property="adduid" column="addUid"/>
+    <result property="addrid" column="addRid"/>
+  </resultMap>
+
+  <select id="queryPage" parameterType="com.wayakeji.common.api.dto.AuthorityUserGet"
+          resultMap="authorityUserMap">
+    SELECT
+    *
+    FROM `authority_user`
+    <where>
+      <if test="query.username != null and query.username != ''">
+        AND `username` LIKE CONCAT('%', #{query.username}, '%')
+      </if>
+      <if test="query.email != null and query.email != ''">
+        AND `email` LIKE CONCAT('%', #{query.email}, '%')
+      </if>
+      <if test="query.phone != null and query.phone != ''">
+        AND `phone` LIKE CONCAT('%', #{query.phone}, '%')
+      </if>
+      <if test="query.nickname != null and query.nickname != ''">
+        AND `nickname` LIKE CONCAT('%', #{query.nickname}, '%')
+      </if>
+      <if test="query.belong != null and query.belong != ''">
+        AND `belong` = #{query.belong}
+      </if>
+      <if test="query.enabled != null">
+        AND `enabled` = #{query.enabled}
+      </if>
+      <if test="query.addRid != null and query.addRid != 0">
+        AND `addRid` = #{query.addRid}
+      </if>
+      <if test="query.addUid != null and query.addUid != 0">
+        AND `addUid` = #{query.addUid}
+      </if>
+    </where>
+  </select>
+
+  <update id="updateEnabled" parameterType="com.wayakeji.common.api.dto.AuthorityUserEnabled">
+    UPDATE
+      `authority_user`
+    SET
+      `enabled` = #{enabled}
+    WHERE `id` = #{id}
+  </update>
+
+  <select id="selectNotRoleByRid" parameterType="java.util.Map"
+          resultType="java.util.Map">
+    SELECT
+    a.`id`,
+    a.`username`
+    FROM `authority_user` a
+    LEFT JOIN `authority_role_user` b ON b.`uid` = a.`id`
+    WHERE b.`id` IS NULL
+    <if test="rid != null and rid != 0">
+      AND a.`addRid` = #{rid}
+    </if>
+    <if test="uid != null and uid != 0">
+      AND a.`addUid` = #{uid}
+    </if>
+  </select>
+
+  <select id="selectLoginErrorCount" parameterType="java.util.Map"  resultType="int">
+    SELECT
+      COUNT(`id`)
+    FROM `authority_login_history`
+    WHERE `time` >= DATE_ADD(NOW(), INTERVAL - #{time} SECOND)
+      AND `userId` = #{userId}
+      AND `status` IN (1, 2)
+  </select>
+
+  <update id="updateUserLoginInfo" parameterType="java.util.Map">
+    UPDATE
+      `authority_user`
+    SET
+      `loginTime` = #{loginTime},
+      `loginIp` = #{loginIp}
+    WHERE `id` = #{id}
+  </update>
+
+  <select id="selectApisByUid" parameterType="long"
+          resultType="com.wayakeji.common.api.vo.AuthorityApiVO">
+    SELECT
+      c.`id`,
+      c.`pid`,
+      c.`name`,
+      d.`api`,
+      d.`method`
+    FROM
+      `authority_role_user` a
+        LEFT JOIN `authority_role_module` b ON
+          b.`rid` =
+          a.`rid`
+        LEFT JOIN `authority_module` c ON c.`id` = b.`mid`
+        LEFT JOIN
+      `authority_api` d ON d.`id` = c.`aid`
+    WHERE c.`type` = 4
+      AND
+        a.`uid` = #{id}
+  </select>
+
+  <select id="selectUsersByRid" parameterType="int"
+          resultType="java.util.Map">
+    SELECT
+      a.`id`,
+      a.`uid`,
+      a.`rid`,
+      b.`username`
+    FROM
+      `authority_role_user` a
+        LEFT JOIN `authority_user` b ON b.`id` = a.`uid`
+    WHERE a.`rid` = #{rid}
+  </select>
+
+  <select id="selectRoleInfoByClientId" parameterType="long"
+          resultType="java.util.Map">
+    SELECT
+      b.`id` AS bufRoleId,
+      b.`pid` AS bufRolePid
+    FROM
+      `authority_role_user` a
+        LEFT JOIN `authority_role` b
+                  ON b.`id` = a.`rid`
+    WHERE a.`uid` = #{id}
+  </select>
+
+
+  <select id="selectNotRoleUidsByRid" parameterType="int"
+          resultType="long">
+    SELECT
+      a.`id`
+    FROM `authority_user` a
+           LEFT JOIN `authority_role_user` b ON b.`uid` = a.`id`
+    WHERE b.`id` IS NULL
+      AND a.`addRid` = #{rid}
+  </select>
+
+</mapper>

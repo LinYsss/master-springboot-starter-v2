@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wayakeji.authority.mapper.AuthorityModuleMapper">
+
+    <resultMap id="authorityModuleMap" type="com.wayakeji.common.api.entity.AuthorityModule">
+      <id property="id" column="id"/>
+      <result property="pid" column="pid"/>
+      <result property="name" column="name"/>
+      <result property="icon" column="icon"/>
+      <result property="type" column="type"/>
+      <result property="aid" column="aid"/>
+      <result property="page" column="page"/>
+      <result property="explain" column="explain"/>
+      <result property="sequence" column="sequence"/>
+    </resultMap>
+
+    <select id="selectCacheApis" resultType="com.wayakeji.common.api.vo.AuthorityApiCacheVO">
+      SELECT
+        a.`id`,
+        b.`api`,
+        b.`method`
+      FROM `authority_module` a
+             LEFT JOIN `authority_api` b ON b.`id` = a.`aid`
+      WHERE a.`type` = 4
+    </select>
+
+    <select id="selectModuleAll" resultType="java.util.Map">
+      SELECT
+        a.*,
+        b.`api`,
+        b.`method`
+      FROM `authority_module` a
+             LEFT JOIN `authority_api` b ON b.`id` = a.`aid`
+    </select>
+
+    <insert id="insertModule" parameterType="com.wayakeji.common.api.dto.AuthorityModuleAdd"
+            useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO `authority_module` (
+        `pid`, `name`, `type`,`icon`,
+        `aid`, `page`, `explain`,
+        `sequence`
+      )VALUES (
+                #{pid}, #{name}, #{type},#{icon},
+                #{aid}, #{page}, #{explain},
+                #{sequence}
+              )
+    </insert>
+
+    <update id="updateApiQuotePushOne" parameterType="int">
+      UPDATE
+        `authority_api`
+      SET
+        `quote` = `quote` + 1
+      WHERE `id` = #{aid}
+    </update>
+
+    <update id="updateModule" parameterType="com.wayakeji.common.api.dto.AuthorityModulePut">
+      UPDATE
+      `authority_module`
+      <set>
+        <if test="name !=null and name != ''">
+          `name` = #{name},
+        </if>
+        <if test="icon !=null and icon != ''">
+          `icon` = #{icon},
+        </if>
+        <if test="type != null">
+          `type` = #{type},
+        </if>
+        <if test="page !=null and page != ''">
+          `page` = #{page},
+        </if>
+        <if test="explain != null and explain != ''">
+          `explain` = #{explain},
+        </if>
+      </set>
+      WHERE `id` = #{id}
+    </update>
+
+    <delete id="deleteModules" parameterType="com.wayakeji.common.api.dto.AuthorityModuleDel">
+      DELETE FROM `authority_module`
+      WHERE `id` IN
+      <foreach collection="ids" item="id" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </delete>
+
+    <update id="updateApiQuote" parameterType="com.wayakeji.common.api.dto.AuthorityModuleDel">
+      UPDATE
+      `authority_api`
+      SET
+      `quote` =
+      <foreach collection="apiQuotes" item="item" separator=" " open="CASE id" close="END">
+        WHEN #{item.id} THEN `quote` + #{item.quote}
+      </foreach>
+      WHERE ID IN
+      <foreach collection="apiQuotes" item="item" open="(" close=")" separator=",">
+        #{item.id}
+      </foreach>
+    </update>
+
+    <update id="updateModuleSequence" parameterType="com.wayakeji.common.api.dto.AuthorityModuleSequencePatch">
+      UPDATE
+      `authority_module`
+      SET
+      `sequence` =
+      <foreach collection="sequences" item="item" separator=" " open="CASE id" close="END">
+        WHEN #{item.id} THEN #{item.sequence}
+      </foreach>
+      WHERE (`type` = 2 OR `type` = 3)
+      AND `id` IN
+      <foreach collection="sequences" item="item" open="(" close=")" separator=",">
+        #{item.id}
+      </foreach>
+    </update>
+
+    <select id="selectRoleModuleAll" resultType="java.util.Map">
+      SELECT
+        `id`,
+        `pid`,
+        `name`,
+        `sequence`
+      FROM `authority_module`
+    </select>
+
+    <select id="selectModulesByRid" parameterType="int"
+            resultType="java.util.Map">
+      SELECT
+      b.`id`,
+      b.`pid`,
+      b.`name`,
+      b.`sequence`
+      FROM `authority_role_module` a
+      LEFT JOIN `authority_module` b ON b.`id` = a.`mid`
+      <where>
+        <if test="rid != null and rid != 0">
+          a.`rid` = #{rid}
+        </if>
+      </where>
+    </select>
+
+    <select id="selectModuleIdsByRid" parameterType="int"
+            resultType="int">
+        SELECT
+            a.`id`
+        FROM `authority_module` a
+                 LEFT JOIN `authority_role_module` b ON b.`mid` = a.`id`
+        WHERE `rid` = #{rid}
+    </select>
+
+    <select id="selectMenusByUid" parameterType="long"
+            resultType="java.util.Map">
+      SELECT
+        c.`id`,
+        c.`pid`,
+        c.`name`,
+        c.`icon`,
+        c.`type`,
+        c.`page`,
+        c.`sequence`
+      FROM `authority_role_user` a
+             LEFT JOIN
+           `authority_role_module` b ON
+             b.`rid` = a.`rid`
+             LEFT JOIN
+           `authority_module` c ON c.`id` = b.`mid`
+      WHERE c.`type` = 2
+        AND a.`uid`
+        = #{id}
+    </select>
+
+    <select id="selectPagesByUid" parameterType="long"
+            resultType="java.util.Map">
+      SELECT
+        c.`id`,
+        c.`pid`,
+        c.`name`,
+        c.`type`,
+        c.`page`,
+        c.`sequence`
+      FROM `authority_role_user` a
+             LEFT JOIN
+           `authority_role_module` b ON
+             b.`rid` = a.`rid`
+             LEFT JOIN
+           `authority_module` c ON c.`id` = b.`mid`
+      WHERE c.`type` = 3
+        AND a.`uid`
+        = #{id}
+    </select>
+
+</mapper>

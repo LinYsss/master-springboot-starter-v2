@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.wayakeji</groupId>
+	<version>2.0.0</version>
+	<artifactId>common-springboot-bom</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<common.version>${project.version}</common.version>
+		<log4j2.version>2.17.1</log4j2.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<fastjson.version>1.2.83</fastjson.version>
+		<dom4j.version>1.6.1</dom4j.version>
+		<springdoc.version>1.6.9</springdoc.version>
+		<swagger.core.version>2.2.0</swagger.core.version>
+		<mybatis-plus.version>3.5.2</mybatis-plus.version>
+		<dynamic-ds.version>3.5.2</dynamic-ds.version>
+		<mysql.version>8.0.30</mysql.version>
+		<druid.version>1.2.14</druid.version>
+		<seata.version>1.5.2</seata.version>
+		<excel.version>1.2.6</excel.version>
+		<hutool.version>5.8.16</hutool.version>
+		<sa-token>1.32.0</sa-token>
+		<velocity.version>2.3</velocity.version>
+		<velocity.tool.version>3.1</velocity.tool.version>
+		<asm.version>3.3.1</asm.version>
+	</properties>
+
+	<!-- 定义全局jar版本,模块使用需要再次引入但不用写版本号 -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.wayakeji</groupId>
+				<artifactId>common-springboot-core</artifactId>
+				<version>${common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.wayakeji</groupId>
+				<artifactId>common-springboot-log</artifactId>
+				<version>${common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.wayakeji</groupId>
+				<artifactId>common-springboot-mybatis</artifactId>
+				<version>${common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.wayakeji</groupId>
+				<artifactId>common-springboot-security</artifactId>
+				<version>${common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.wayakeji</groupId>
+				<artifactId>common-springboot-api</artifactId>
+				<version>${common.version}</version>
+			</dependency>
+
+			<!--springdoc -->
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-webmvc-core</artifactId>
+				<version>${springdoc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>${swagger.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-webflux-ui</artifactId>
+				<version>${springdoc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-security</artifactId>
+				<version>${springdoc.version}</version>
+			</dependency>
+			<!--fastjson 版本 -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+			<!--dom4j 版本 -->
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>${dom4j.version}</version>
+			</dependency>
+			<!--excel 导入导出 -->
+			<dependency>
+				<groupId>com.pig4cloud.excel</groupId>
+				<artifactId>excel-spring-boot-starter</artifactId>
+				<version>${excel.version}</version>
+			</dependency>
+			<!-- seata kryo 序列化 -->
+			<dependency>
+				<groupId>io.seata</groupId>
+				<artifactId>seata-serializer-kryo</artifactId>
+				<version>${seata.version}</version>
+			</dependency>
+			<!--orm 相关 -->
+			<!--Mysql数据库驱动 -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.version}</version>
+			</dependency>
+			<!--集成druid连接池 -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid-spring-boot-starter</artifactId>
+				<version>${druid.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-extension</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-annotation</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!--代码生成器-->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-generator</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!--代码生成模板引擎-->
+			<dependency>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity-engine-core</artifactId>
+				<version>${velocity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.velocity.tools</groupId>
+				<artifactId>velocity-tools-generic</artifactId>
+				<version>${velocity.tool.version}</version>
+			</dependency>
+			<!--hutool bom 工具类 -->
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-bom</artifactId>
+				<version>${hutool.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>asm</groupId>
+				<artifactId>asm</artifactId>
+				<version>${asm.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<!-- jar包带源码 -->
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- 发布选项: id必须与setting.xml文件中server的id相同 子项目发布到私服时默认会依赖 -->
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>releases</name>
+			<url>http://183.220.108.28:18081/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot</id>
+			<name>snapshot</name>
+			<url>http://183.220.108.28:18081/repository/maven-releases/</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>
